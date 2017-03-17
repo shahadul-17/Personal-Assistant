@@ -204,39 +204,35 @@ class ResponseGenerator:
         return " ".join(resp)
     # end
 
-    def respond(self, sentence):
+    def getResponse(self, sentence):
         """Parse the user's inbound sentence and find candidate terms that make up a best-fit response"""
         cleaned = self.preprocess_text(sentence)
-        parsed = TextBlob(cleaned)
+        _textBlob = TextBlob(cleaned)
 
         # Loop through all the sentences, if more than one. This will help extract the most relevant
         # response text even across multiple sentences (for example if there was no obvious direct noun
         # in one sentence
-        pronoun, noun, adjective, verb = self.find_candidate_parts_of_speech(parsed)
+        pronoun, noun, adjective, verb = self.find_candidate_parts_of_speech(_textBlob)
 
         # If we said something about the bot and used some kind of direct noun, construct the
         # sentence around that, discarding the other candidates
-        resp = self.check_for_comment_about_bot(pronoun, noun, adjective)
+        response = self.check_for_comment_about_bot(pronoun, noun, adjective)
 
         # If we just greeted the bot, we'll use a return greeting
-        if not resp:
-            resp = self.check_for_greeting(parsed)
+        if not response:
+            response = self.check_for_greeting(_textBlob)
 
-        if not resp:
+        if not response:
             # If we didn't override the final sentence, try to construct a new one:
             if not pronoun:
-                resp = random.choice(self.NONE_RESPONSES)
+                response = random.choice(self.NONE_RESPONSES)
             elif pronoun == 'I' and not verb:
-                resp = random.choice(self.COMMENTS_ABOUT_SELF)
+                response = random.choice(self.COMMENTS_ABOUT_SELF)
             else:
-                resp = self.construct_response(pronoun, noun, verb)
+                response = self.construct_response(pronoun, noun, verb)
 
         # If we got through all that with nothing, use a random response
-        if not resp:
-            resp = random.choice(self.NONE_RESPONSES)
-
-        # logger.info("Returning phrase '%s'", resp)
-        # Check that we're not going to say anything obviously offensive
-        # filter_response(resp)
-
-        return resp
+        if not response:
+            response = random.choice(self.NONE_RESPONSES)
+        
+        return response
