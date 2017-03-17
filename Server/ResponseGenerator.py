@@ -196,7 +196,7 @@ class ResponseGenerator:
                 else:
                     resp.append(verb_word)
         if noun:
-            pronoun = "an" if starts_with_vowel(noun) else "a"
+            pronoun = "an" if self.starts_with_vowel(noun) else "a"
             resp.append(pronoun + " " + noun)
 
         resp.append(random.choice(("tho", "bro", "lol", "bruh", "smh", "")))
