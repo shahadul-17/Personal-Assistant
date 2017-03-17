@@ -276,8 +276,7 @@ def receiver():
 receiverThread = threading.Thread(target=receiver)
 receiverThread.start()
 
-print('Waiting for client...')
-clientsocket, addr = serversocket.accept()
-print('Client connected...')
-
-#while True:
+while True:
+    print('Waiting for client...')
+    clientsocket, addr = serversocket.accept()
+    print('Client connected...')
