@@ -4,8 +4,6 @@ import string
 import random
 import os
 
-# can you see it...???
-
 os.environ['NLTK_DATA'] = os.getcwd() + '/nltk_data'
 
 from textblob import TextBlob
