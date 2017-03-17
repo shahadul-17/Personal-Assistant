@@ -51,6 +51,23 @@ COMMENTS_ABOUT_SELF = [
 ]
 # end
 
+SELF_VERBS_WITH_NOUN_CAPS_PLURAL = [
+    "My last startup totally crushed the {noun} vertical",
+    "Were you aware I was a serial entrepreneur in the {noun} sector?",
+    "My startup is Uber for {noun}",
+    "I really consider myself an expert on {noun}",
+]
+
+SELF_VERBS_WITH_NOUN_LOWER = [
+    "Yeah but I know a lot about {noun}",
+    "My bros always ask me about {noun}",
+]
+
+SELF_VERBS_WITH_ADJECTIVE = [
+    "I'm personally building the {adjective} Economy",
+    "I consider myself to be a {adjective}preneur",
+]
+
 # start:example-pronoun.py
 def find_pronoun(sent):
     """Given a sentence, find a preferred pronoun to respond with. Returns None if no candidate
@@ -88,9 +105,8 @@ def find_noun(sent):
             if p == 'NN':  # This is a noun
                 noun = w
                 break
-    if noun:
-        logger.info("Found noun: %s", noun)
-
+    #if noun:
+        # logger.info("Found noun: %s", noun)
     return noun
 
 def find_adjective(sent):
@@ -124,7 +140,7 @@ def starts_with_vowel(word):
 
 def broback(sentence):
     """Main program loop: select a response for the input sentence and return it"""
-    logger.info("Broback: respond to %s", sentence)
+    # logger.info("Broback: respond to %s", sentence)
     resp = respond(sentence)
     return resp
 
@@ -255,7 +271,7 @@ def receiver():
                 # else if messageReceived.star
                 # messToSend = str.capitalize(messageReceived) + '\r\n'
 
-                clientsocket.send(respond(messageReceived).encode('ascii') + '\r\n')
+                clientsocket.send((respond(messageReceived) + '\r\n').encode('ascii'))
 
 receiverThread = threading.Thread(target=receiver)
 receiverThread.start()
