@@ -5,7 +5,6 @@ import random
 import os
 
 #lets commit..
-#I have synced my version...
 
 os.environ['NLTK_DATA'] = os.getcwd() + '/nltk_data'
 
