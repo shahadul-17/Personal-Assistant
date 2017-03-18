@@ -52,22 +52,33 @@ class ResponseGenerator:
     def getCurrentSystemDate(self):
         return datetime.now().strftime("%d-%B-%Y")
     
+    def hasNumbers(self, sentence):
+        return any(char.isdigit() for char in sentence)
+
     def calculate(self, words):
+        i = 0
         result = 0.0
         operator = ''
 
         for word in words:
-            if word == 'calculate':
-                continue
-            elif word == '+' or word == '-':
+            if word == '+' or word == '-' or word == 'x' or word == 'into' or word == '/' or word == 'divided' or word == 'by' or word == 'over':
                 operator = word
-                
-                continue
             else:
-                if operator == '+':
-                    result += float(word)
-                elif operator == '-':
-                    result -= float(word)
+                try:
+                    if i == 0:
+                        result = float(word)
+                    elif operator == '+':
+                        result += float(word)
+                    elif operator == '-':
+                        result -= float(word)
+                    elif operator == 'x' or operator == 'into':
+                        result *= float(word)
+                    elif operator == '/' or operator == 'divided' or operator == 'by' or 'over':
+                        result /= float(word)
+                    
+                    i += 1
+                except:
+                    continue
         
         return str(result)
 
@@ -83,7 +94,7 @@ class ResponseGenerator:
         
         response += ', '
 
-        if sentence.__contains__('calculate') and (sentence.__contains__('+') or sentence.__contains__('-')):
+        if self.hasNumbers(sentence) and (sentence.__contains__('+') or sentence.__contains__('-') or sentence.__contains__('into') or sentence.__contains__('x') or sentence.__contains__('/') or sentence.__contains__('divided') or sentence.__contains__('by') or sentence.__contains__('over')):
             response += self.calculate(words)
         elif self.isWhQuestion(sentence) == (True, self.whQuestions[0]) or self.isAsking(words):
             if sentence.__contains__("'s") or sentence.__contains__('is') or sentence.__contains__('the'):
