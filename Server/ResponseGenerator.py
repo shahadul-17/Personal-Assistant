@@ -81,13 +81,36 @@ class ResponseGenerator:
                     continue
         
         return str(result)
+    
+    def checkDatabase(self, _textBlob):     # finds appropriate keyword to respond...
+        for x in os.walk(".\\data\\"):
+            for fileName in x[2]:
+                for word in _textBlob.words:
+                    if word == fileName:
+                        return str(x[0] + '\\' + fileName)
+    
+    def getInformation(self, path, _textBlob):
+        information = ''
 
+        with open(path) as file:
+            for line in file:
+                line = line.strip()
+
+                _lineTextBlob = TextBlob(line)
+
+                for keyword in set(_lineTextBlob.words):
+                    if _textBlob.__contains__(keyword.lower()):
+                        information = line
+                
+        return information
+    
     def getResponse(self, sentence):
         response = ''
         sentence = sentence.lower()
         words = self.getWords(sentence)
+        _textBlob = TextBlob(sentence)
 
-        # _textBlob = TextBlob(sentence) -> to extract all the parts of speech...
+        response += self.getInformation(self.checkDatabase(_textBlob), _textBlob)
 
         if self.isGreeting(words):
             response += random.choice(self.greetings)
