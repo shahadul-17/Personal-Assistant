@@ -1,5 +1,6 @@
 import os
 import random
+import re
 import string
 
 os.environ['NLTK_DATA'] = os.getcwd() + '/nltk_data'
@@ -17,18 +18,18 @@ class ResponseGenerator:
     dayResponses = [ 'sir, today is ', 'today is ' ]
     timeResponses = [ 'sir, it is ', "it's ", 'it is ' ]
     
-    greetings = [ 'hello', 'hello sir' 'hey', 'hi', 'greetings', "what's up" ]
-    howAreYouResponses = [ "i'm good sir", 'i am feeling good', 'feeling better sir', 'my system is working fine sir' ]
+    greetings = ['hello\n', 'hello sir\n', 'hey\n', 'hi\n', 'greetings\n', "what's up\n"]
+    howAreYouResponses = ["i'm good sir", 'i am feeling good', 'feeling better sir', 'my system is working fine sir']
 
-    callByNameResponses = [ 'yes sir?', 'yes', 'tell me sir, how can I help you?' ]
+    callByNameResponses = ['yes sir?', 'yes', 'tell me sir, how can I help you?']
 
     def getWords(self, sentence):
         return sentence.split(' ')
     
-    def isGreeting(self, words):
-        for word in words:
-            if word in self.greetings:
-                return True
+    def isGreeting(self, sentence):
+        if self.greetings.__contains__(sentence):
+            return True
+        return False
 
     def isWhQuestion(self, sentence):
         isWhQuestion = False
@@ -63,12 +64,13 @@ class ResponseGenerator:
         for word in words:
             if word == '+' or word == '-' or word == 'x' or word == 'into' or word == '/' or word == 'divided' or word == 'by' or word == 'over':
                 operator = word
+
             else:
                 try:
-                    if i == 0:
-                        result = float(word)
-                    elif operator == '+':
+                    if operator == '+':
                         result += float(word)
+                    elif operator == '':
+                        result = float(word)
                     elif operator == '-':
                         result -= float(word)
                     elif operator == 'x' or operator == 'into':
@@ -100,33 +102,30 @@ class ResponseGenerator:
 
                 for keyword in set(_lineTextBlob.words):
                     if _textBlob.__contains__(keyword.lower()):
-                        information = line
+                        information += line
                 
         return information
     
     def getResponse(self, sentence):
         response = ''
         sentence = sentence.lower()
+        if self.isGreeting(sentence):
+            response += random.choice(self.greetings)
         words = self.getWords(sentence)
         _textBlob = TextBlob(sentence)
 
-        response += self.getInformation(self.checkDatabase(_textBlob), _textBlob)
+        # response += self.getInformation(self.checkDatabase(_textBlob), _textBlob)
 
-        if self.isGreeting(words):
-            response += random.choice(self.greetings)
-        
-        response += ', '
+        response += response
 
         if self.hasNumbers(sentence) and (sentence.__contains__('+') or sentence.__contains__('-') or sentence.__contains__('into') or sentence.__contains__('x') or sentence.__contains__('/') or sentence.__contains__('divided') or sentence.__contains__('by') or sentence.__contains__('over')):
             response += self.calculate(words)
-        elif self.isWhQuestion(sentence) == (True, self.whQuestions[0]) or self.isAsking(words):
-            if sentence.__contains__("'s") or sentence.__contains__('is') or sentence.__contains__('the'):
-                if sentence.__contains__('time') and (sentence.__contains__('date') or sentence.__contains__('day')):
-                    response += random.choice(self.dayResponses) + self.getCurrentSystemDate() + ' and ' + random.choice(self.timeResponses) + self.getCurrentSystemTime()
-                elif sentence.__contains__('time'):
-                    response += random.choice(self.timeResponses) + self.getCurrentSystemTime()
-                elif sentence.__contains__('date') or sentence.__contains__('day'):
-                    response += random.choice(self.dayResponses) + self.getCurrentSystemDate()
+        elif sentence.__contains__('time') and (sentence.__contains__('date') or sentence.__contains__('day')):
+            response += random.choice(self.dayResponses) + self.getCurrentSystemDate() + ' and ' + random.choice(self.timeResponses) + self.getCurrentSystemTime()
+        elif sentence.__contains__('time'):
+            response += random.choice(self.timeResponses) + self.getCurrentSystemTime()
+        elif sentence.__contains__('date') or sentence.__contains__('day'):
+            response += random.choice(self.dayResponses) + self.getCurrentSystemDate()
         elif sentence.__contains__(self.name):
             response += random.choice(self.callByNameResponses)
         
