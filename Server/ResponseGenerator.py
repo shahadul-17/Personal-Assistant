@@ -129,4 +129,4 @@ class ResponseGenerator:
         elif sentence.__contains__(self.name):
             response += random.choice(self.callByNameResponses)
         
-        return response + '\r\n'
+        return response

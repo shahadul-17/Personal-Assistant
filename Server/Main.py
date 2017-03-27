@@ -6,6 +6,20 @@ from ResponseGenerator import ResponseGenerator
 
 _socket = None         # socket object...
 
+def toUTF(text):        # this method will convert strings from 'ascii' to 'utf-8'...
+    encoded = text.encode('utf-8')
+    length = len(encoded)
+    x, y = divmod(length, 256)
+
+    _bytearray = bytearray()
+    _bytearray.append(x)
+    _bytearray.append(y)
+
+    for _byte in encoded:
+        _bytearray.append(_byte)
+    
+    return _bytearray
+
 def backgroundWorker():     # this method will run on a different thread...
     global _socket
 
@@ -13,11 +27,12 @@ def backgroundWorker():     # this method will run on a different thread...
 
     while True:
         if _socket is not None:
-            text = _socket.recv(1024).decode('ascii')    # receiving text from client...
+            text = _socket.recv(1024).decode('utf-8')    # receiving text from client...
             
             if text != "":
-                print('client said: ' + str.strip(text))     # printing the text received from client (for debugging purpose)...
-                _socket.send((responseGenerator.getResponse(text)).encode('ascii'))    # generating appropriate response and sending to client...
+                text = str.strip(text[2:])
+                print('client said: ' + text)     # printing the text received from client (for debugging purpose)...
+                _socket.send(toUTF(responseGenerator.getResponse(text)))    # generating appropriate response and sending to client...
 
 responseGenerator = ResponseGenerator()     # creating response generator object...
 
