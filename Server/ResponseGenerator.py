@@ -3,9 +3,11 @@ import random
 import string
 
 from datetime import datetime
+from Utilities import Utilities
 from Weather import Weather
 
 class ResponseGenerator:
+
     name = 'maya'
     weather = Weather()
 
@@ -46,10 +48,10 @@ class ResponseGenerator:
                 return True
     
     def getCurrentSystemTime(self):
-        return datetime.now().strftime("%I:%M %p")
+        return datetime.now().strftime(Utilities.getValueFromConfigurationFile("time-format"))
     
     def getCurrentSystemDate(self):
-        return datetime.now().strftime("%d-%B-%Y")
+        return datetime.now().strftime(Utilities.getValueFromConfigurationFile("date-format"))
     
     def hasNumbers(self, sentence):
         return any(char.isdigit() for char in sentence)
@@ -104,10 +106,14 @@ class ResponseGenerator:
         elif sentence.__contains__(self.name):
             response += random.choice(self.callByNameResponses)
         elif sentence.__contains__('weather'):
-            response += self.weather.getWeather("Dhaka, BD")
+            response += self.weather.getWeatherStatus("Dhaka, BD")
         elif sentence.__contains__('temperature'):
             response += self.weather.getTemperature("Dhaka, BD")
         elif sentence.__contains__('humidity'):
             response += self.weather.getHumidity("Dhaka, BD")
+        elif sentence.__contains__('sunrise') or sentence.__contains__('sun') and sentence.__contains__('rise'):
+            _list = [ 'rise', 'shine' ]
+            
+            response += 'Sun will ' + random.choice(_list) + ' at ' + self.weather.getSunriseTime("Dhaka, BD")
         
         return response
