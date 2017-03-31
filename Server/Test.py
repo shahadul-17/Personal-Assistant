@@ -13,3 +13,5 @@ print(w.get_detailed_status())
 # print(w.get_temperature('celsius'))
 # print(wind)
 print(w.get_humidity())
+
+print(owm.is_API_online())

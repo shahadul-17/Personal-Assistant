@@ -18,7 +18,7 @@ class ResponseGenerator:
     dayResponses = [ 'sir, today is ', 'today is ' ]
     timeResponses = [ 'sir, it is ', "it's ", 'it is ' ]
     
-    greetings = [ 'hello', 'hello sir' 'hey', 'hi', 'greetings', "what's up" ]
+    greetings = [ 'hello', 'hello sir', 'hey', 'hi', 'greetings', "what's up" ]
     howAreYouResponses = [ "i'm good sir", 'i am feeling good', 'feeling better sir', 'my system is working fine sir' ]
 
     callByNameResponses = [ 'yes sir?', 'yes', 'tell me sir, how can I help you?' ]
@@ -26,9 +26,16 @@ class ResponseGenerator:
     def getWords(self, sentence):
         return sentence.split(' ')
     
-    def isGreeting(self, words):
+    def isSelf(self, words):
+        _list = [ 'you', 'your' ]
+
         for word in words:
-            if word in self.greetings:
+            if word in _list:
+                return True
+
+    def isGreeting(self, sentence):
+        for word in self.greetings:
+            if sentence.__contains__(word):
                 return True
 
     def isWhQuestion(self, sentence):
@@ -60,6 +67,7 @@ class ResponseGenerator:
         i = 0
         result = 0.0
         operator = ''
+        _list = [ "sir, if I'm not mistaken, the result should be ", "the result is " ]
 
         for word in words:
             if word == '+' or word == '-' or word == 'x' or word == 'into' or word == '/' or word == 'divided' or word == 'by' or word == 'over':
@@ -83,37 +91,42 @@ class ResponseGenerator:
         
         return str(result)
 
-    def getResponse(self, sentence):
-        response = ''
+    def getResponse(self, sentence):        # major modification needs to be done...
+        response = None
         sentence = sentence.lower()
         words = self.getWords(sentence)
 
         if self.isGreeting(words):
-            response += random.choice(self.greetings)
-        
-        response += ', '
-
-        if self.hasNumbers(sentence) and (sentence.__contains__('+') or sentence.__contains__('-') or sentence.__contains__('into') or sentence.__contains__('x') or sentence.__contains__('/') or sentence.__contains__('divided') or sentence.__contains__('by') or sentence.__contains__('over')):
-            response += self.calculate(words)
-        elif self.isWhQuestion(sentence) == (True, self.whQuestions[0]) or self.isAsking(words):
-            if sentence.__contains__("'s") or sentence.__contains__('is') or sentence.__contains__('the'):
-                if sentence.__contains__('time') and (sentence.__contains__('date') or sentence.__contains__('day')):
-                    response += random.choice(self.dayResponses) + self.getCurrentSystemDate() + ' and ' + random.choice(self.timeResponses) + self.getCurrentSystemTime()
-                elif sentence.__contains__('time'):
-                    response += random.choice(self.timeResponses) + self.getCurrentSystemTime()
-                elif sentence.__contains__('date') or sentence.__contains__('day'):
-                    response += random.choice(self.dayResponses) + self.getCurrentSystemDate()
+            response = random.choice(self.greetings)
+        elif self.hasNumbers(sentence) and (sentence.__contains__('+') or sentence.__contains__('-') or sentence.__contains__('into') or sentence.__contains__('x') or sentence.__contains__('/') or sentence.__contains__('divided') or sentence.__contains__('by') or sentence.__contains__('over')):
+            response = self.calculate(words)
+        elif sentence.__contains__('time') and (sentence.__contains__('date') or sentence.__contains__('day')):
+            response = random.choice(self.dayResponses) + self.getCurrentSystemDate() + ' and ' + random.choice(self.timeResponses) + self.getCurrentSystemTime()
+        elif sentence.__contains__('time'):
+            response = random.choice(self.timeResponses) + self.getCurrentSystemTime()
+        elif sentence.__contains__('date') or sentence.__contains__('day'):
+            response = random.choice(self.dayResponses) + self.getCurrentSystemDate()
         elif sentence.__contains__(self.name):
-            response += random.choice(self.callByNameResponses)
+            response = random.choice(self.callByNameResponses)
         elif sentence.__contains__('weather'):
-            response += self.weather.getWeatherStatus("Dhaka, BD")
+            response = self.weather.getWeatherStatus("Dhaka, BD")
         elif sentence.__contains__('temperature'):
-            response += self.weather.getTemperature("Dhaka, BD")
+            response = self.weather.getTemperature("Dhaka, BD")
         elif sentence.__contains__('humidity'):
-            response += self.weather.getHumidity("Dhaka, BD")
-        elif sentence.__contains__('sunrise') or sentence.__contains__('sun') and sentence.__contains__('rise'):
+            response = self.weather.getHumidity("Dhaka, BD")
+        elif sentence.__contains__('wind'):       # needs to be fixed...
+            response = self.weather.getWindInformation("Dhaka, BD")
+        elif sentence.__contains__('sunrise') or sentence.__contains__('sunshine') or (sentence.__contains__('sun') and (sentence.__contains__('rise') or sentence.__contains__('shine'))):
             _list = [ 'rise', 'shine' ]
             
-            response += 'Sun will ' + random.choice(_list) + ' at ' + self.weather.getSunriseTime("Dhaka, BD")
+            response = 'Sun will ' + random.choice(_list) + ' at ' + self.weather.getSunriseTime("Dhaka, BD")
+        elif sentence.__contains__('sunset') or (sentence.__contains__('sun') and sentence.__contains__('set')):
+            _list = [ 'set' ]
+            
+            response = 'Sun will ' + random.choice(_list) + ' at ' + self.weather.getSunsetTime("Dhaka, BD")
+        elif self.isSelf(words):
+            response = 'True'       # needs to be implemented...
+        else:
+            response = sentence
         
         return response

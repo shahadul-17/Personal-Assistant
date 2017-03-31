@@ -45,7 +45,38 @@ class Weather:
         return temperature
     
     def getSunriseTime(self, location):
-        return datetime.fromtimestamp(self.__getWeather(location).get_sunrise_time()).strftime("%I:%M %p")
+        return datetime.fromtimestamp(self.__getWeather(location).get_sunrise_time()).strftime(Utilities.getValueFromConfigurationFile("time-format"))
     
+    def getSunsetTime(self, location):
+        return datetime.fromtimestamp(self.__getWeather(location).get_sunset_time()).strftime(Utilities.getValueFromConfigurationFile("time-format"))
+
     def getHumidity(self, location):
         return 'Humidity is ' + str(self.__getWeather(location).get_humidity()) + '%'
+    
+    def getWindInformation(self, location):       # needs to be fixed...
+        i = 0
+        temp = None
+        direction = None
+        speed = None
+        windInformation = str(self.__getWeather(location).get_wind())
+        _list = windInformation.split(', ')
+
+        for item in _list:
+            if i == 0:
+                temp = "'deg': "
+            else:
+                temp = "'speed': "
+            
+            item = item[item.rfind(temp) + len(temp):]
+
+            if i == 0:
+                direction = item
+            else:
+                speed = item[: len(item) - 1]
+            
+            i += 1
+        
+        return 'direction = ' + direction + ' and speed = ' + speed + ' meters per second'
+
+        # return 'Wind is blowing due ' + 
+        # "the wind is blowing due north."
