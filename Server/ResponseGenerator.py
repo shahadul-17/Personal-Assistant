@@ -2,13 +2,12 @@ import os
 import random
 import string
 
-os.environ['NLTK_DATA'] = os.getcwd() + '/nltk_data'
-
 from datetime import datetime
-from textblob import TextBlob
+from Weather import Weather
 
 class ResponseGenerator:
     name = 'maya'
+    weather = Weather()
 
     whQuestions = [ 'what', 'who', 'why', 'where', 'when', 'which', 'whom', 'whose', 'how' ]
     askingKeywords = [ 'tell me' ]
@@ -87,8 +86,6 @@ class ResponseGenerator:
         sentence = sentence.lower()
         words = self.getWords(sentence)
 
-        # _textBlob = TextBlob(sentence) -> to extract all the parts of speech...
-
         if self.isGreeting(words):
             response += random.choice(self.greetings)
         
@@ -106,5 +103,11 @@ class ResponseGenerator:
                     response += random.choice(self.dayResponses) + self.getCurrentSystemDate()
         elif sentence.__contains__(self.name):
             response += random.choice(self.callByNameResponses)
+        elif sentence.__contains__('weather'):
+            response += self.weather.getWeather("Dhaka, BD")
+        elif sentence.__contains__('temperature'):
+            response += self.weather.getTemperature("Dhaka, BD")
+        elif sentence.__contains__('humidity'):
+            response += self.weather.getHumidity("Dhaka, BD")
         
         return response
