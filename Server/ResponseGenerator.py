@@ -9,6 +9,7 @@ from datetime import datetime
 from textblob import TextBlob
 
 class ResponseGenerator:
+
     name = 'maya'
 
     whQuestions = [ 'what', 'who', 'why', 'where', 'when', 'which', 'whom', 'whose', 'how' ]
