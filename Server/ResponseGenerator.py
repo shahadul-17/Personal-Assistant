@@ -3,7 +3,7 @@ import random
 import string
 
 from datetime import datetime
-from Utilities import Utilities
+from Utility import Utility
 from Weather import Weather
 
 class ResponseGenerator:
@@ -55,10 +55,10 @@ class ResponseGenerator:
                 return True
     
     def getCurrentSystemTime(self):
-        return datetime.now().strftime(Utilities.getValueFromConfigurationFile("time-format"))
+        return datetime.now().strftime(Utility.getValueFromConfigurationFile("time-format"))
     
     def getCurrentSystemDate(self):
-        return datetime.now().strftime(Utilities.getValueFromConfigurationFile("date-format"))
+        return datetime.now().strftime(Utility.getValueFromConfigurationFile("date-format"))
     
     def hasNumbers(self, sentence):
         return any(char.isdigit() for char in sentence)

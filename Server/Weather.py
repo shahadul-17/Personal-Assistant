@@ -1,14 +1,14 @@
 import pyowm
 
 from datetime import datetime
-from Utilities import Utilities
+from Utility import Utility
 
 class Weather:
 
     _owm = None
 
     def __init__(self):
-        self._owm = pyowm.OWM(Utilities.getValueFromConfigurationFile("open-weather-api-key"))
+        self._owm = pyowm.OWM(Utility.getValueFromConfigurationFile("open-weather-api-key"))
     
     def __getWeather(self, location):
         return self._owm.weather_at_place(location).get_weather()
@@ -45,10 +45,10 @@ class Weather:
         return temperature
     
     def getSunriseTime(self, location):
-        return datetime.fromtimestamp(self.__getWeather(location).get_sunrise_time()).strftime(Utilities.getValueFromConfigurationFile("time-format"))
+        return datetime.fromtimestamp(self.__getWeather(location).get_sunrise_time()).strftime(Utility.getValueFromConfigurationFile("time-format"))
     
     def getSunsetTime(self, location):
-        return datetime.fromtimestamp(self.__getWeather(location).get_sunset_time()).strftime(Utilities.getValueFromConfigurationFile("time-format"))
+        return datetime.fromtimestamp(self.__getWeather(location).get_sunset_time()).strftime(Utility.getValueFromConfigurationFile("time-format"))
 
     def getHumidity(self, location):
         return 'Humidity is ' + str(self.__getWeather(location).get_humidity()) + '%'

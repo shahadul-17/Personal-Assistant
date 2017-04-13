@@ -2,7 +2,7 @@ import string
 import socket
 import threading
 
-from Utilities import Utilities
+from Utility import Utility
 from ResponseGenerator import ResponseGenerator
 
 class Main:
@@ -12,7 +12,7 @@ class Main:
     responseGenerator = ResponseGenerator()     # creating response generator object...
 
     def __init__(self):
-        self.port = Utilities.getValueFromConfigurationFile('port')
+        self.port = Utility.getValueFromConfigurationFile('port')
 
         serverSocket = socket.socket()      # creating socket object...
         serverSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
