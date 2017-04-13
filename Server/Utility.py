@@ -1,14 +1,18 @@
 class Utility:
 
     @staticmethod
-    def getValueFromConfigurationFile(key):
+    def __getValueFromFile(directory, key):
         value = None
 
-        with open(".\\configuration.ini") as file:
+        with open(directory) as file:
             for line in file:
                 if line.startswith(key):
                     value = line[len(key) + 1:]
 
                     break
         
-        return value
+        return str.strip(value)
+    
+    @staticmethod
+    def getValueFromConfigurationFile(key):
+        return Utility.__getValueFromFile(".\\configuration.ini", key)
