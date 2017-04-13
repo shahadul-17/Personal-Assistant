@@ -1,8 +1,9 @@
 import os
 import random
+import re
+import string
 
-
-# os.environ['NLTK_DATA'] = os.getcwd() + '/nltk_data'
+os.environ['NLTK_DATA'] = os.getcwd() + '/nltk_data'
 
 from datetime import datetime
 from textblob import TextBlob
