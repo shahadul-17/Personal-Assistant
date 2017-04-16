@@ -37,11 +37,11 @@ class Utility:
         columnHeaders = list(dataFrame)
 
         if (scanFor in columnHeaders):
-            return random.choice(dataFrame[columnHeaders[columnHeaders.index(scanFor)]])
+            return random.choice(dataFrame[columnHeaders[columnHeaders.index(scanFor)]].dropna())
         else:
             for columnHeader in columnHeaders:
-                for data in dataFrame[columnHeader]:
-                    if scanFor == data:
-                        return random.choice(dataFrame[columnHeader])
+                    for data in dataFrame[columnHeader]:
+                        if scanFor == data:
+                            return random.choice(dataFrame[columnHeader].dropna())
         
-        return random.choice(dataFrame["default-response"])
+        return random.choice(dataFrame["default-response"].dropna())

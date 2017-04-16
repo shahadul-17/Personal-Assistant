@@ -8,20 +8,12 @@ from Weather import Weather
 
 class ResponseGenerator:
 
-    name = 'maya'
     weather = Weather()
 
     whQuestions = [ 'what', 'who', 'why', 'where', 'when', 'which', 'whom', 'whose', 'how' ]
-    askingKeywords = [ 'tell me' ]
-
     timeDateKeywords = [ 'time', 'date', 'day' ]
     dayResponses = [ 'sir, today is ', 'today is ' ]
     timeResponses = [ 'sir, it is ', "it's ", 'it is ' ]
-    
-    greetings = [ 'hello', 'hello sir', 'hey', 'hi', 'greetings', "what's up" ]
-    howAreYouResponses = [ "i'm good sir", 'i am feeling good', 'feeling better sir', 'my system is working fine sir' ]
-
-    callByNameResponses = [ 'yes sir?', 'yes', 'tell me sir, how can I help you?' ]
 
     def getWords(self, sentence):
         return sentence.split(' ')
@@ -48,11 +40,6 @@ class ResponseGenerator:
                 break
         
         return isWhQuestion, whQuestion
-    
-    def isAsking(self, words):
-        for word in words:
-            if word in self.askingKeywords:
-                return True
     
     def getCurrentSystemTime(self):
         return datetime.now().strftime(Utility.getValueFromConfigurationFile("time-format"))
@@ -96,9 +83,7 @@ class ResponseGenerator:
         sentence = sentence.lower()
         words = self.getWords(sentence)
 
-        if self.isGreeting(words):
-            response = random.choice(self.greetings)
-        elif self.hasNumbers(sentence) and (sentence.__contains__('+') or sentence.__contains__('-') or sentence.__contains__('into') or sentence.__contains__('x') or sentence.__contains__('/') or sentence.__contains__('divided') or sentence.__contains__('by') or sentence.__contains__('over')):
+        if self.hasNumbers(sentence) and (sentence.__contains__('+') or sentence.__contains__('-') or sentence.__contains__('into') or sentence.__contains__('x') or sentence.__contains__('/') or sentence.__contains__('divided') or sentence.__contains__('by') or sentence.__contains__('over')):
             response = self.calculate(words)
         elif sentence.__contains__('time') and (sentence.__contains__('date') or sentence.__contains__('day')):
             response = random.choice(self.dayResponses) + self.getCurrentSystemDate() + ' and ' + random.choice(self.timeResponses) + self.getCurrentSystemTime()
@@ -106,8 +91,6 @@ class ResponseGenerator:
             response = random.choice(self.timeResponses) + self.getCurrentSystemTime()
         elif sentence.__contains__('date') or sentence.__contains__('day'):
             response = random.choice(self.dayResponses) + self.getCurrentSystemDate()
-        elif sentence.__contains__(self.name):
-            response = random.choice(self.callByNameResponses)
         elif sentence.__contains__('weather'):
             response = self.weather.getWeatherStatus("Dhaka, BD")
         elif sentence.__contains__('temperature'):
@@ -116,17 +99,14 @@ class ResponseGenerator:
             response = self.weather.getHumidity("Dhaka, BD")
         elif sentence.__contains__('wind'):       # needs to be fixed...
             response = self.weather.getWindInformation("Dhaka, BD")
-        elif sentence.__contains__('sunrise') or sentence.__contains__('sunshine') or (sentence.__contains__('sun') and (sentence.__contains__('rise') or sentence.__contains__('shine'))):
-            _list = [ 'rise', 'shine' ]
-            
-            response = 'Sun will ' + random.choice(_list) + ' at ' + self.weather.getSunriseTime("Dhaka, BD")
-        elif sentence.__contains__('sunset') or (sentence.__contains__('sun') and sentence.__contains__('set')):
-            _list = [ 'set' ]
-            
-            response = 'Sun will ' + random.choice(_list) + ' at ' + self.weather.getSunsetTime("Dhaka, BD")
-        elif self.isSelf(words):
-            response = 'True'       # needs to be implemented...
+        elif sentence.__contains__('sun'):
+            _lists = [[ 'rise', 'shine' ], [ 'set' ]]
+
+            if sentence.__contains__(_lists[0][0]) or sentence.__contains__(_lists[0][1]):
+                response = 'Sun will ' + random.choice(_lists[0]) + ' at ' + self.weather.getSunriseTime("Dhaka, BD")
+            elif sentence.__contains__(_lists[1][0]):
+                response = 'Sun will ' + random.choice(_lists[1]) + ' at ' + self.weather.getSunsetTime("Dhaka, BD")
         else:
-            response = sentence
+            response = Utility.getData(sentence, Utility.getDataFrame("response.xlsx"))     # needs to be fixed...
         
-        return response
+        return str(response)
