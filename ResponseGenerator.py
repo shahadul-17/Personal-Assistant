@@ -50,7 +50,7 @@ class ResponseGenerator:
     def hasNumbers(self, sentence):
         return any(char.isdigit() for char in sentence)
 
-    def calculate(self, words):
+    def calculate(self, words):     # needs to be fixed...
         i = 0
         result = 0.0
         operator = ''
@@ -85,11 +85,11 @@ class ResponseGenerator:
 
         if self.hasNumbers(sentence) and (sentence.__contains__('+') or sentence.__contains__('-') or sentence.__contains__('into') or sentence.__contains__('x') or sentence.__contains__('/') or sentence.__contains__('divided') or sentence.__contains__('by') or sentence.__contains__('over')):
             response = self.calculate(words)
-        elif sentence.__contains__('time') and (sentence.__contains__('date') or sentence.__contains__('day')):
+        elif sentence.__contains__('time') and (sentence.__contains__('date') or words.__contains__('day')):
             response = random.choice(self.dayResponses) + self.getCurrentSystemDate() + ' and ' + random.choice(self.timeResponses) + self.getCurrentSystemTime()
         elif sentence.__contains__('time'):
             response = random.choice(self.timeResponses) + self.getCurrentSystemTime()
-        elif sentence.__contains__('date') or sentence.__contains__('day'):
+        elif sentence.__contains__('date') or words.__contains__('day'):
             response = random.choice(self.dayResponses) + self.getCurrentSystemDate()
         elif sentence.__contains__('weather'):
             response = self.weather.getWeatherStatus("Dhaka, BD")
